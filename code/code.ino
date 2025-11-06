@@ -4,18 +4,18 @@
 
 // PIN ASSIGMENTS
 #define LIGHT_PIN A0 // photoresistor
-#define BUZZ_PIN     // buzzer
-#define BUTTON_PIN   // button
+#define BUZZ_PIN 13     // buzzer
+#define BUTTON_PIN 10   // button
 
-#define TRIG_PIN
-#define ECHO_PIN 
+#define TRIG_PIN 9
+#define ECHO_PIN 8
 
 // VARIABLES
 #define MOTION_THRESHOLD 15 // min change to register motion
-#define LIGHT_THRESHOLD 0.5 // min light to activate
+#define LIGHT_THRESHOLD 500 // min light to activate
 long previousDistance = 0;
 
-LiquidCrystal lcd(); // put lcd pins here
+LiquidCrystal lcd(13,12,5,4,3,2); // put lcd pins here
 
 // Function to read the distance from the Ultrasonic sensor
 long readUltrasonicDistance() {
@@ -75,9 +75,9 @@ void lcdDisplay(bool state) {
 
 void buzzer(bool state) {
   if (state) {
-    digitalWrite(BUZZER_PIN, HIGH);
+    digitalWrite(BUZZ_PIN, HIGH);
   } else {
-    digitalWrite(BUZZER_PIN, LOW);
+    digitalWrite(BUZZ_PIN, LOW);
   }
 }
 
@@ -89,6 +89,7 @@ void setup() {
   // setup 
   pinMode(BUZZ_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
+  pinMode(LIGHT_PIN, INPUT);
 
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
@@ -108,6 +109,8 @@ void loop() {
 
   if (detectMotion()) {
     // MOTION DETECTED
+
+    lightLevel = analogRead(LIGHT_PIN);
     
     // check is light detected by photoresistor
     if (lightLevel < LIGHT_THRESHOLD) {
@@ -121,7 +124,6 @@ void loop() {
         // turn off everything
         lcdDisplay(false); 
         buzzer(false);
-        continue; 
       }
     }
   }
